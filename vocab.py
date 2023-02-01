@@ -181,4 +181,4 @@ def show_full_from_cache(word):
     return result
 
 if __name__ == "__main__":
-    print(show_bref(fetch_cambridge('the Apocalypse')))
+    print(fetch_cambridge('the Apocalypse'))
