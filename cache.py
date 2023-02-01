@@ -92,5 +92,5 @@ if __name__ == "__main__":
     
     conn,cur = connect_db()
     #print(delete_word(conn,cur,"hello"))
-    print(get_cache(conn,cur,"go",""))
+    print(get_random_words(cur))
     close_db(conn,cur)

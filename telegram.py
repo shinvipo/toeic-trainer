@@ -35,8 +35,8 @@ def random_words():
 def reminder():
     while True:
         words = random_words()
-        bot.send_message(myid, show_bref(fetch_cambridge(words)))
-        countdown(60)
+        bot.send_message(myid, (fetch_cambridge(words)))
+        countdown(60*15)
 
 @bot.message_handler(commands=['search'])
 def search_handler(message):
@@ -65,7 +65,7 @@ def callback_query(call):
         bot.send_message(chatid,"Nm")
     elif call.data == "vocab":
         words = random_words()
-        bot.send_message(chatid,show_bref(fetch_cambridge(words)),reply_markup=Example_inline())
+        bot.send_message(chatid,fetch_cambridge(words),reply_markup=Example_inline())
     elif call.data == "ex":
         bot.send_message(chatid,"Excercise")
     if call.data == "Example":

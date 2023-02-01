@@ -138,15 +138,9 @@ def fetch_cambridge(text):
     close_db(con,cur)
     
     soup = BeautifulSoup(response, 'html.parser')
-  
-    # with open("./data/cambridge_response2.html",encoding="utf8") as fp:
-    #     soup = BeautifulSoup(fp, "html.parser")
-    return soup 
-    
-
-def show_bref(soup):
     response_word = soup.find("title").text.split("-")[0].strip()
-
+    if response_word.startswith("CAMBRIDGE ENGLISH"):
+        return text
     if "|" in response_word:
         response_word = response_word.split("|")[0].strip().lower()
     
@@ -185,3 +179,6 @@ def show_full_from_cache(word):
             result = result + (parse_meaning(meaning))
             result = result + (parse_example(meaning))
     return result
+
+if __name__ == "__main__":
+    print(show_bref(fetch_cambridge('the Apocalypse')))
