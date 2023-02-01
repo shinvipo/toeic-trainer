@@ -10,6 +10,12 @@ from bs4 import BeautifulSoup
 import re
 DICTS = ["CAMBRIDGE", "MERRIAM WEBSTER"]
 
+def countdown(secondd):
+    while secondd:
+        mins, secs = divmod(secondd, 60)
+        time.sleep(1)
+        secondd -= 1
+
 def make_a_soup(text):
     soup = BeautifulSoup(text, "lxml")
     return soup

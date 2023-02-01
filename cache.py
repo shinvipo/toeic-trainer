@@ -8,6 +8,14 @@ DB = str(dir / "cambridge.db")
 
 current_datetime = datetime.datetime.now()
 
+def connect_db(db = "Vocab.db"):
+    conn = sqlite3.connect('Vocab.db')    
+    cursor = conn.cursor()
+    return conn, cursor
+
+def close_db(conn,cur):
+    cur.close()
+    conn.close()
 
 def create_table(con, cur):
     cur.execute(
@@ -30,11 +38,10 @@ def create_table(con, cur):
 def insert_into_table(con, cur, input_word, response_word, url, text):
     response_word = response_word.lower()
     cur.execute(
-        "INSERT INTO words (input_word, response_word, created_at, response_url, response_text) VALUES (?, ?, ?, ?, ?)",
+        "INSERT or IGNORE INTO words (input_word, response_word, created_at, response_url, response_text) VALUES (?, ?, ?, ?, ?)",
         (input_word, response_word, current_datetime, url, text),
     )
     con.commit()
-
 
 def get_cache(con, cur, word, resquest_url):
     try:
@@ -80,3 +87,10 @@ def delete_word(con, cur, word):
         )
         con.commit()
         return (True, data)
+
+if __name__ == "__main__":
+    
+    conn,cur = connect_db()
+    #print(delete_word(conn,cur,"hello"))
+    print(get_cache(conn,cur,"go",""))
+    close_db(conn,cur)

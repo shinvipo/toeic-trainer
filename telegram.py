@@ -1,9 +1,15 @@
 import telebot
 from telebot.types import InlineKeyboardMarkup,InlineKeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply, KeyboardButton
+import random
+from vocab import *
+from threading import Thread
 
 TOKEN = "5844845850:AAFtYpG4tboBH0mvJ7oMHipwK1KTYkrmqxc"
 
 bot = telebot.TeleBot(TOKEN)
+
+myid =  1062599312
+
 
 def markup_inline():
     markup = InlineKeyboardMarkup()
@@ -14,6 +20,23 @@ def markup_inline():
         InlineKeyboardButton("Again", callback_data="Ag")
     )
     return markup
+
+def Example_inline():
+    markup = InlineKeyboardMarkup()
+    markup.row_width = 1
+    markup.add(
+        InlineKeyboardButton("Example", callback_data="Example")
+    )
+    return markup
+
+def random_words():
+    return random.choice(toeic)
+
+def reminder():
+    while True:
+        words = random_words()
+        bot.send_message(myid, show_bref(fetch_cambridge(words)))
+        countdown(60)
 
 @bot.message_handler(commands=['search'])
 def search_handler(message):
@@ -41,8 +64,17 @@ def callback_query(call):
     elif call.data == "Nm":
         bot.send_message(chatid,"Nm")
     elif call.data == "vocab":
-        bot.send_message(chatid,"Vocabulary")
+        words = random_words()
+        bot.send_message(chatid,show_bref(fetch_cambridge(words)),reply_markup=Example_inline())
     elif call.data == "ex":
         bot.send_message(chatid,"Excercise")
-
-bot.infinity_polling()
+    if call.data == "Example":
+        word = call.json['message']['text'].split("\n")[0]
+        bot.send_message(chatid,show_full_from_cache(word))
+        
+t1 = Thread(target=reminder)
+t1.start()
+t1.join()
+t2 = Thread(target=bot.infinity_polling)
+t2.start()
+t2.join()
