@@ -14,9 +14,6 @@ CAMBRIDGE_SPELLCHECK_URL_VI = CAMBRIDGE_URL + "/spellcheck/english-vietnamese/?q
 
 headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0' }
 
-with open("./Data/vocab.json",'r') as f:
-    toeic = json.load(f)["TOEIC"]
-
 def spellcheck(txt):
     txt = txt.strip()
     reg = "^[A-Za-z .]*[A-Za-z.][A-Za-z -.]*$"
@@ -58,7 +55,7 @@ def parse_meaning(def_block):
 def parse_def_info(def_block):
     x = def_block.find("span", "def-info ddef_i")
     if x == None:
-        return
+        return " "
     def_info = replace_all(x.text).strip()
     if def_info == " ":
         def_into = ""
@@ -139,7 +136,7 @@ def fetch_cambridge(text):
     
     soup = BeautifulSoup(response, 'html.parser')
     response_word = soup.find("title").text.split("-")[0].strip()
-    if response_word.startswith("CAMBRIDGE ENGLISH"):
+    if response_word.upper().startswith("CAMBRIDGE ENGLISH"):
         return text
     if "|" in response_word:
         response_word = response_word.split("|")[0].strip().lower()
@@ -177,7 +174,7 @@ def show_full_from_cache(word):
         for meaning in all_meaning:
             result = result + (parse_def_info(meaning))
             result = result + (parse_meaning(meaning))
-            result = result + (parse_example(meaning))
+            result = result + (parse_example(meaning)) + "\n"
     return result
 
 if __name__ == "__main__":
