@@ -39,13 +39,16 @@ def random_question():
 
 def reminder():
     while True:
-        words = random_words()
-        bot.send_message(myid, (fetch_cambridge(words)), reply_markup=markup_inline())
-        tts = gTTS(words, lang='en')
-        tts.save('output.mp3')
-        audio = open('output.mp3', 'rb')
-        bot.send_audio(chat_id=myid, audio=audio)
-        countdown(60*15)
+        try:
+            words = random_words()
+            bot.send_message(myid, (fetch_cambridge(words)), reply_markup=markup_inline())
+            tts = gTTS(words, lang='en')
+            tts.save('output.mp3')
+            audio = open('output.mp3', 'rb')
+            bot.send_audio(chat_id=myid, audio=audio)
+            countdown(60*15)
+        except:
+            pass
 
 @bot.message_handler(commands=['search'])
 def search_handler(message):
@@ -76,10 +79,11 @@ def callback_query(call):
         order = int(call.json['message']['text'].split("/")[0].strip().lower())
         ex = excecise[order]
         ans = ex['answer']
-        del ex['answer']
         da = ""
         tmp = {"1":"A","2":"B","3":"C","4":"D"}
-        for k,v in ex:
+        for k,v in ex.items():
+            if k == "answer":
+                continue
             if v == ans:
                 da = tmp[k]
     except: pass
@@ -127,6 +131,8 @@ def callback_query(call):
     elif call.data == "C":
         if da == "C":
             bot.send_message(chatid,"Exactly!!\nC: " + ex["3"])
+        else:
+            bot.send_message(chatid,"Wrong!!")
     elif call.data == "D":
         if da == "D":
             bot.send_message(chatid,"Exactly!!\nD: " + ex["4"])
