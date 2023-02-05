@@ -4,7 +4,6 @@ import random
 from vocab import *
 from threading import Thread
 from gtts import gTTS
-import textwrap
 
 TOKEN = "5844845850:AAFtYpG4tboBH0mvJ7oMHipwK1KTYkrmqxc"
 
@@ -45,7 +44,7 @@ def reminder():
             tts = gTTS(words, lang='en')
             tts.save('output.mp3')
             audio = open('output.mp3', 'rb')
-            bot.send_audio(chat_id=myid, audio=audio)
+            bot.send_audio(chat_id=myid, audio=audio, title= words)
             countdown(60*15)
         except:
             pass
@@ -53,12 +52,12 @@ def reminder():
 @bot.message_handler(commands=['search'])
 def search_handler(message):
 	msg = message.text
-	words = msg.split(" ")[1:]
-	bot.reply_to(message,words, reply_markup = markup_inline())
+	words = msg.replace("/search ","").strip()
+	bot.reply_to(message,fetch_cambridge(words), reply_markup = markup_inline())
 	tts = gTTS(words, lang='en')
 	tts.save('output.mp3')
 	audio = open('output.mp3', 'rb')
-	bot.send_audio(chat_id=message.chat.id, audio=audio)
+	bot.send_audio(chat_id=message.chat.id, audio=audio, title= words)
 	
 
 @bot.message_handler(commands=['help','start'])
@@ -85,6 +84,7 @@ def callback_query(call):
             if k == "answer":
                 continue
             if v == ans:
+                ans = da + ": " + ans
                 da = tmp[k]
     except: pass
     if call.data == "Ez":
@@ -102,7 +102,7 @@ def callback_query(call):
         tts = gTTS(words, lang='en')
         tts.save('output.mp3')
         audio = open('output.mp3', 'rb')
-        bot.send_audio(chat_id=chatid, audio=audio)
+        bot.send_audio(chat_id=chatid, audio=audio, title= words)
     elif call.data == "ex":
         order, qs = random_question()
         question = str(order) + "/ " + qs["question"]
@@ -120,24 +120,24 @@ def callback_query(call):
         
     elif call.data == "A":
         if da == "A":
-            bot.send_message(chatid,"Exactly!!\nA: " + ex["1"])
+            bot.send_message(chatid,"Exactly!!\nA: " + ans)
         else:
-            bot.send_message(chatid,"Wrong!!")
+            bot.send_message(chatid,f"Wrong!!\nAnswer is '{ans}'")
     elif call.data == "B":
         if da == "B":
-            bot.send_message(chatid,"Exactly!!\nB: " + ex["2"])
+            bot.send_message(chatid,"Exactly!!\nB: " + ans)
         else:
-            bot.send_message(chatid,"Wrong!!")
+            bot.send_message(chatid,f"Wrong!!\nAnswer is '{ans}'")
     elif call.data == "C":
         if da == "C":
-            bot.send_message(chatid,"Exactly!!\nC: " + ex["3"])
+            bot.send_message(chatid,"Exactly!!\nC: " + ans)
         else:
-            bot.send_message(chatid,"Wrong!!")
+            bot.send_message(chatid,f"Wrong!!\nAnswer is '{ans}'")
     elif call.data == "D":
         if da == "D":
-            bot.send_message(chatid,"Exactly!!\nD: " + ex["4"])
+            bot.send_message(chatid,"Exactly!!\nD: " + ans)
         else:
-            bot.send_message(chatid,"Wrong!!")
+            bot.send_message(chatid,f"Wrong!!\nAnswer is '{ans}'")
         
     if call.data == "Example":
         word = call.json['message']['text'].split("\n")[0].strip().lower()

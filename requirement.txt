@@ -1,4 +1,5 @@
-python-telegram-bot
+pyTelegramBotAPI
 request
 sqlite3
 bs4
+gtts

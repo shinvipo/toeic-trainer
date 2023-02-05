@@ -9,7 +9,7 @@ DB = str(dir / "cambridge.db")
 current_datetime = datetime.datetime.now()
 
 def connect_db(db = "Vocab.db"):
-    conn = sqlite3.connect('Vocab.db')    
+    conn = sqlite3.connect(db)    
     cursor = conn.cursor()
     return conn, cursor
 
